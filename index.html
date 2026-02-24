@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Joint Animator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Left panel: bone hierarchy -->
+    <div id="sidebar">
+        <h2>Bone Hierarchy</h2>
+        <div id="bone-tree"></div>
+        <div id="bone-info">
+            <h3 id="selected-bone-name">No bone selected</h3>
+            <div id="bone-transform-info"></div>
+        </div>
+    </div>
+
+    <!-- 3D Viewport -->
+    <div id="viewport">
+        <canvas id="canvas"></canvas>
+        <div id="drop-overlay">
+            <div id="drop-message">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <p>Drop FBX file here</p>
+            </div>
+        </div>
+        <div id="toolbar">
+            <button id="btn-translate" class="tool-btn active" title="Translate (G)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3M2 12h20M12 2v20"/></svg>
+            </button>
+            <button id="btn-rotate" class="tool-btn" title="Rotate (R)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+            </button>
+            <button id="btn-scale" class="tool-btn" title="Scale (S)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="6" height="6"/><rect x="16" y="16" width="6" height="6"/><path d="M8 8l8 8"/></svg>
+            </button>
+            <span class="toolbar-sep"></span>
+            <button id="btn-local" class="tool-btn active" title="Local Space">Local</button>
+            <button id="btn-world" class="tool-btn" title="World Space">World</button>
+            <span class="toolbar-sep"></span>
+            <button id="btn-toggle-bones" class="tool-btn active" title="Toggle Bone Visibility (B)">Bones</button>
+            <button id="btn-toggle-mesh" class="tool-btn active" title="Toggle Mesh Visibility (M)">Mesh</button>
+            <button id="btn-wireframe" class="tool-btn" title="Toggle Wireframe (W)">Wire</button>
+        </div>
+        <div id="no-model-hint">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <p>Drag & drop an FBX file to begin</p>
+            <p class="hint-sub">Or use the file picker below</p>
+            <input type="file" id="file-input" accept=".fbx">
+        </div>
+    </div>
+
+    <!-- Right panel: animation timeline -->
+    <div id="timeline-panel">
+        <div id="timeline-header">
+            <h2>Animation</h2>
+            <div id="timeline-controls">
+                <button id="btn-prev-frame" title="Previous Frame">&lt;</button>
+                <button id="btn-play" title="Play/Pause (Space)">&#9654;</button>
+                <button id="btn-next-frame" title="Next Frame">&gt;</button>
+                <button id="btn-stop" title="Stop">&#9632;</button>
+                <span id="frame-display">Frame: 0 / 0</span>
+                <label>FPS: <input type="number" id="fps-input" value="24" min="1" max="120" style="width:45px"></label>
+            </div>
+        </div>
+        <div id="timeline-toolbar">
+            <button id="btn-add-keyframe" title="Add Keyframe (K)">+ Key</button>
+            <button id="btn-delete-keyframe" title="Delete Keyframe (Del)">- Key</button>
+            <button id="btn-clear-animation" title="Clear All Keyframes">Clear</button>
+            <span class="toolbar-sep"></span>
+            <label>Duration (frames): <input type="number" id="duration-input" value="48" min="1" max="9999" style="width:55px"></label>
+            <span class="toolbar-sep"></span>
+            <button id="btn-export-anim" title="Export Animation">Export</button>
+        </div>
+        <div id="timeline-body">
+            <div id="timeline-tracks"></div>
+            <div id="timeline-scrubber-area">
+                <canvas id="timeline-canvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import maps for Three.js from CDN -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/"
+        }
+    }
+    </script>
+    <script type="module" src="app.js"></script>
+</body>
+</html>
